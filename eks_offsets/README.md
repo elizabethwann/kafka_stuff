@@ -1,3 +1,11 @@
+# What Am I
+
+* Deploy EKS Cluster for CFK (Confluent for Kafka)
+* Helm Charts to deploy Kafka Topics, Producers and Consumers at scale
+* Read from offsets topic to see effect of topics and consumers in consumer group
+
+# Instructions
+
 ## Check AWS IAM profile
 `aws sts get-caller-identity`
 
@@ -53,7 +61,7 @@ eksctl create iamserviceaccount \
 
 `kubectl create -f cp.yaml`
 
-# Helm Charts
+## Helm Charts
 
 Use Helm to deploy Kafka Topics, Producers and Consumers
 
@@ -63,7 +71,7 @@ Use Helm to deploy Kafka Topics, Producers and Consumers
 
 `helm install consume helm/consume`
 
-# Check consumers and offset topic
+## Check consumers and offset topic
 
 ```
 kafka-console-consumer \
@@ -89,3 +97,19 @@ kafka-console-consumer \
   --formatter \
   "kafka.coordinator.group.GroupMetadataManager\$OffsetsMessageFormatter"
 ```
+
+# Clean Up
+
+## Helm
+`helm uninstall topics`
+`helm uninstall produce`
+`helm uninstall consume`
+
+## Delete CP
+`kubectl delete -f cp.yaml`
+
+## Scaledown EKS Cluster
+`eks eksctl scale nodegroup --name ng-7016740c --cluster lizzie --nodes 0 --nodes-min 0 --nodes-max 20 --region eu-west-2`
+
+## Delete EKS Cluster
+`eksctl delete cluster --name lizzie --region eu-west-2`
