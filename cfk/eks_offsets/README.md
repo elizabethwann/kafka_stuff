@@ -10,7 +10,7 @@
 `aws sts get-caller-identity`
 
 ## Create EKS Cluster
-`eksctl create cluster --name my-cluster --region region-code`
+`eksctl create cluster --name lizzie --region eu-west-2`
 
 *Note can't use Fargate as it doesn't allow for PVC*
 
@@ -19,13 +19,13 @@
 * [Create IAM OIDC Provider](https://docs.aws.amazon.com/eks/latest/userguide/enable-iam-roles-for-service-accounts.html)
 
 Get OIDC Issuer ID for cluster:
-`oidc_id=$(aws eks describe-cluster --name $cluster_name --query "cluster.identity.oidc.issuer" --region $region --output text | cut -d '/' -f 5)`
+`oidc_id=$(aws eks describe-cluster --name lizzie --query "cluster.identity.oidc.issuer" --region eu-west-2 --output text | cut -d '/' -f 5)`
 
 Check if IAM OIDC provider for cluster is already present:
 `aws iam list-open-id-connect-providers | grep $oidc_id | cut -d "/" -f4`
 
 If not, create IAM OIDC provider:
-`eksctl utils associate-iam-oidc-provider --cluster $cluster_name --approve --region $region`
+`eksctl utils associate-iam-oidc-provider --cluster lizzie --approve --region eu-west-2`
 
 
 * [Create the Amazon EBS CSI driver IAM role](https://docs.aws.amazon.com/eks/latest/userguide/csi-iam-role.html)
@@ -33,15 +33,15 @@ If not, create IAM OIDC provider:
 eksctl create iamserviceaccount \
     --name ebs-csi-controller-sa \
     --namespace kube-system \
-    --cluster $cluster_name \
-    --role-name $rolenameAmazonEKS_EBS_CSI_DriverRole \
+    --cluster lizzie \
+    --role-name AmazonEKS_EBS_CSI_DriverRole \
     --role-only \
     --attach-policy-arn arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy \
     --approve \
-    --region $region
+    --region eu-west-2
 ```
 
-`eksctl create addon --name aws-ebs-csi-driver --cluster $my-cluster --service-account-role-arn arn:aws:iam::111122223333:role/$AmazonEKS_EBS_CSI_DriverRole --force --region $eu-west-2`
+`eksctl create addon --name aws-ebs-csi-driver --cluster lizzie --service-account-role-arn arn:aws:iam::111122223333:role/AmazonEKS_EBS_CSI_DriverRole --force --region eu-west-2`
 
 ## Confluent Namespace
 
