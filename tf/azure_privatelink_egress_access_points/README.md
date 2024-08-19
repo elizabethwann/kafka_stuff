@@ -13,7 +13,7 @@ The scripts will create
     * source connector (Datagen) generating dummy data into an orders topic
     * sink connector to Azure blob storage
 
-## How to Use
+## How to Use
 1. Authenticate to Azure using Azure CLI following [these instructions](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/guides/azure_cli)
 2. Fill variables in terraform.tfvars and secret.tfvars
 3. Run `terraform apply -var-file=secret.tfvars`
